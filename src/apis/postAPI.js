@@ -13,4 +13,7 @@ export default {
   postDelete(postId) {
     return api({ method: 'DELETE', url: `/post/${postId}` });
   },
+  postGetKeyword() {
+    return api({ method: 'GET', url: '/post/words' });
+  },
 };

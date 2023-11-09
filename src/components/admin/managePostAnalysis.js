@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { userInfoState } from '../../states/userState';
-import { postListState } from '../../states/postState';
+import { keywordListState, postListState } from '../../states/postState';
 import { useEffect, useState } from 'react';
 import { color, formatDate, styledAlert } from '../../utils';
 import postAPI from '../../apis/postAPI';
@@ -12,43 +12,38 @@ export default function ManagePostAnalysis() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(userInfoState);
   const infoList = ['번호', '제목', '생성 시각', '상태', '삭제'];
-  const [postList, setPostList] = useRecoilState(postListState);
+  const [keywordList, setKeywordList] = useRecoilState(keywordListState);
   const [currentPagePostList, setCurrentPagePostList] = useState([]);
   const [page, setPage] = useState(1);
 
-  const words = [
-    {
-      text: 'told',
-      value: 114,
-    },
-    {
-      text: 'mistake',
-      value: 113,
-    },
-    {
-      text: 'thought',
-      value: 116,
-    },
-    {
-      text: 'bad',
-      value: 117,
-    },
-  ];
+  const options = {
+    rotations: 2,
+    rotationAngles: [0],
+  };
 
   useEffect(() => {
     postAPI
-      .postGetAll()
-      .then((res) => setPostList(res.data?.reverse()))
-      .catch((err) => console.log(`status: ${err.response.status}, ${err.response.data}`));
+      .postGetKeyword()
+      .then((res) =>
+        setKeywordList(
+          res.data.map((keyword) => {
+            return {
+              text: keyword.word,
+              value: keyword.count,
+            };
+          }),
+        ),
+      )
+      .catch((err) => console.log(err.response));
   }, []);
 
   useEffect(() => {
-    setCurrentPagePostList(postList.slice((page - 1) * 10, page * 10));
-  }, [postList]);
+    setCurrentPagePostList(keywordList.slice((page - 1) * 10, page * 10));
+  }, [keywordList]);
 
   return (
     <Style.AdminForm>
-      <ReactWordcloud words={words} size={[500, 500]} />
+      <ReactWordcloud words={keywordList} size={[200, 200]} options={options} />
     </Style.AdminForm>
   );
 }
@@ -57,9 +52,9 @@ const Style = {
   Container: styled.div`
     display: flex;
     position: relative;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-    gap: 32px;
+    /* gap: 32px; */
 
     width: calc(100vw - 48px);
     height: 100%;
@@ -74,6 +69,11 @@ const Style = {
     justify-items: center;
     align-items: center;
     gap: 32px;
+
+    width: 40%;
+    height: 50%;
+    border-radius: 20px;
+    background-color: ${color.grayLight};
   `,
   CommunityContainer: styled.div`
     display: flex;

@@ -25,8 +25,8 @@ export default function Home() {
           </Style.Button>
         </Style.InputForm>
         <Style.TextContainer>
-          <Style.Text>{'현재 동조적 현상 키워드는'}</Style.Text>
-          <Style.Text style={{ color: color.blue }}>{'"' + echo + '"'}</Style.Text>
+          {/* <Style.Text>{'현재 동조적 현상 키워드는'}</Style.Text>
+          <Style.Text style={{ color: color.blue }}>{'"' + echo + '"'}</Style.Text> */}
         </Style.TextContainer>
         <Style.MenuForm>
           <Style.MenuContainer onClick={() => navigate('/community')}>
@@ -43,16 +43,16 @@ export default function Home() {
               <Style.MenuTitle>{'게시물 관리'}</Style.MenuTitle>
             </Style.MenuContainer>
           ) : null}
-          <Style.MenuContainer onClick={() => navigate('/manage?filter=echo')}>
-            <Style.MenuButton src={process.env.PUBLIC_URL + '/assets/images/homeEchoButton.svg'} />
-            <Style.MenuTitle>{'동조적 컨텐츠'}</Style.MenuTitle>
-          </Style.MenuContainer>
           {userInfo.uid === 'admin' ? (
             <Style.MenuContainer onClick={() => navigate('/manage?filter=block')}>
               <Style.MenuButton src={process.env.PUBLIC_URL + '/assets/images/homeDangerousButton.svg'} />
               <Style.MenuTitle>{'유해 컨텐츠'}</Style.MenuTitle>
             </Style.MenuContainer>
           ) : null}
+          <Style.MenuContainer onClick={() => navigate('/manage?filter=echo')}>
+            <Style.MenuButton src={process.env.PUBLIC_URL + '/assets/images/homeEchoButton.svg'} />
+            <Style.MenuTitle>{'동조적 컨텐츠'}</Style.MenuTitle>
+          </Style.MenuContainer>
         </Style.MenuForm>
       </Style.ContentForm>
     </Style.Container>

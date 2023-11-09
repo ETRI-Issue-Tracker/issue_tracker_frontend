@@ -12,12 +12,14 @@ export default function Community() {
   const infoList = ['번호', '제목', '생성 시각', '상태'];
   const [postList, setPostList] = useState([]);
   const [page, setPage] = useState(1);
+  const [hover, setHover] = useState(false);
+  const [hoverNumber, setHoverNumber] = useState(0);
 
   const pageHandler = (newPage) => {
     setPage(newPage);
   };
 
-  const currentPagePostList = postList.slice((page - 1) * 10, page * 10);
+  const currentPagePostList = postList.slice((page - 1) * 4, page * 4);
 
   const getPostState = (echo, block) => {
     if (echo) {
@@ -37,44 +39,77 @@ export default function Community() {
     postAPI
       .postGetAll()
       .then((res) => setPostList(res.data?.reverse()))
-      .catch((err) => console.log(`status: ${err.response.status}, ${err.response.data}`));
+      .catch((err) => console.log(err));
   }, []);
 
   return (
     <Style.Container>
       <Style.CommunityContainer>
         {userInfo?.uid ? <Style.FillButton onClick={() => navigate('/post')}>{'작성하기'}</Style.FillButton> : null}
-        <Style.Table>
-          <thead>
-            <Style.TableRow style={{ cursor: 'default' }}>
-              {infoList.map((info, infoIndex) => (
-                <Style.TableHeaderData key={infoIndex}>{info}</Style.TableHeaderData>
-              ))}
-            </Style.TableRow>
-          </thead>
-          <tbody>
-            {currentPagePostList.map((post, postIndex) => (
-              <Style.TableRow key={postIndex} onClick={(e) => postClickHandler(e)}>
-                <Style.TableData width={30}>{post.id}</Style.TableData>
-                <Style.TableData width={300}>{post.title}</Style.TableData>
-                <Style.TableData width={200}>{formatDate(post.createdDate)}</Style.TableData>
-                <Style.TableData width={70}>{getPostState(post.echo, post.block)}</Style.TableData>
-              </Style.TableRow>
-            ))}
-            {Array(currentPagePostList.length ? 10 - currentPagePostList.length : 10)
-              .fill(0)
-              .map((_, index) => {
-                return (
-                  <Style.TableRow key={index}>
-                    <Style.TableData width={30} />
-                    <Style.TableData width={280} />
-                    <Style.TableData width={180} />
-                    <Style.TableData width={60} />
-                  </Style.TableRow>
-                );
-              })}
-          </tbody>
-        </Style.Table>
+        <Style.PostList>
+          {currentPagePostList.map((post, index) => {
+            return (
+              <Style.PostContainer key={index} onClick={() => navigate(`/post/${post.id}`)}>
+                <Style.PostInfo>
+                  <Style.PostTitle>{post.title}</Style.PostTitle>
+                  <Style.PostCreatedAt>{formatDate(post.createdDate)}</Style.PostCreatedAt>
+                </Style.PostInfo>
+                {post.echo ? <Style.PostState>{post.echo}</Style.PostState> : null}
+                {post.block !== 'NORMAL' ? (
+                  post.echo ? (
+                    <Style.PostState
+                      onMouseEnter={() => {
+                        setHover(true);
+                        setHoverNumber(post.id);
+                      }}
+                      onMouseLeave={() => {
+                        setHover(false);
+                        setHoverNumber(0);
+                      }}
+                      src={process.env.PUBLIC_URL + '/assets/images/echo.png'}
+                    >
+                      {hover && hoverNumber === post.id ? (
+                        <Style.HoverContainer style={{ backgroundColor: '#ffffdd' }}>{'동조적'}</Style.HoverContainer>
+                      ) : null}
+                    </Style.PostState>
+                  ) : (
+                    <Style.PostState
+                      onMouseEnter={() => {
+                        setHover(true);
+                        setHoverNumber(post.id);
+                      }}
+                      onMouseLeave={() => {
+                        setHover(false);
+                        setHoverNumber(0);
+                      }}
+                      src={process.env.PUBLIC_URL + '/assets/images/block.png'}
+                    >
+                      {hover && hoverNumber === post.id ? (
+                        <Style.HoverContainer>{'공격적'}</Style.HoverContainer>
+                      ) : null}
+                    </Style.PostState>
+                  )
+                ) : post.echo ? (
+                  <Style.PostState
+                    onMouseEnter={() => {
+                      setHover(true);
+                      setHoverNumber(post.id);
+                    }}
+                    onMouseLeave={() => {
+                      setHover(false);
+                      setHoverNumber(0);
+                    }}
+                    src={process.env.PUBLIC_URL + '/assets/images/echo.png'}
+                  >
+                    {hover && hoverNumber === post.id ? (
+                      <Style.HoverContainer style={{ backgroundColor: '#ffffdd' }}>{'동조적'}</Style.HoverContainer>
+                    ) : null}
+                  </Style.PostState>
+                ) : null}
+              </Style.PostContainer>
+            );
+          })}
+        </Style.PostList>
       </Style.CommunityContainer>
       <Style.ButtonContainer>
         <Style.BorderButton disabled={page === 1} onClick={() => pageHandler(page - 1)}>
@@ -82,7 +117,7 @@ export default function Community() {
         </Style.BorderButton>
         <Style.PageNumber>{page}</Style.PageNumber>
         <Style.BorderButton
-          disabled={page === Math.ceil(postList.length / 10 || postList.length === 0)}
+          disabled={page === Math.ceil(postList.length / 4 || postList.length === 0)}
           onClick={() => pageHandler(page + 1)}
         >
           다음 페이지
@@ -117,6 +152,65 @@ const Style = {
 
     height: 520px;
     background-color: ${color.white};
+  `,
+  PostList: styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 16px;
+
+    width: 80vw;
+    padding: 8px;
+    min-width: 600px;
+    border-radius: 12px;
+    background-color: ${color.white};
+  `,
+  PostContainer: styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: calc(100% - 24px);
+
+    padding: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+
+    cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 2px 2px 3px 3px ${color.grayLight};
+    background-color: ${color.white};
+  `,
+  PostInfo: styled.div``,
+  PostTitle: styled.p`
+    color: ${color.black};
+    font-size: 18px;
+    font-weight: 900;
+  `,
+  PostCreatedAt: styled.p`
+    color: ${color.textExtraLight};
+    font-size: 14px;
+    font-weight: 300;
+  `,
+  PostState: styled.div`
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    padding-left: 16px;
+    font-size: 14px;
+    font-weight: 900;
+    border: none;
+    border-radius: 20px;
+    background-color: transparent;
+    background-size: 48px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: ${(props) => 'url(' + props.src + ')'};
   `,
   Table: styled.table`
     border-collapse: collapse;
@@ -188,5 +282,22 @@ const Style = {
     width: 20px;
     color: ${color.navy};
     text-align: center;
+  `,
+  HoverContainer: styled.div`
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    top: 24px;
+    left: 24px;
+
+    width: 100px;
+    height: 40px;
+
+    color: ${color.text};
+    border-radius: 12px;
+    box-shadow: 2px 2px 3px 3px ${color.grayLight};
+    background-color: #ffdddd;
+    padding: 8px;
   `,
 };

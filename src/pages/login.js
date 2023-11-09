@@ -100,7 +100,7 @@ const Style = {
     gap: 40px;
   `,
   InputTitle: styled.p`
-    width: 120px;
+    width: 150px;
 
     text-align: center;
     color: ${color.navy};

@@ -21,10 +21,9 @@ export default function NewPost() {
     } else {
       postAPI
         .postCreate({ title: titleRef.current.value, content: contentRef.current.value, memberId: 1 })
-        .then((res) => {
-          styledAlert('게시물을 등록했습니다.', () => navigate('/community'));
-        })
+        .then((res) => {})
         .catch((err) => console.log(err.response));
+      styledAlert('게시물을 등록했습니다.', () => navigate('/community'));
     }
   };
 
