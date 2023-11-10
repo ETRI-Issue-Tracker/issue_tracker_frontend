@@ -19,6 +19,7 @@ export default function ManagePostAnalysis() {
   const options = {
     rotations: 2,
     rotationAngles: [0],
+    fontSizes: [15, 50],
   };
 
   useEffect(() => {

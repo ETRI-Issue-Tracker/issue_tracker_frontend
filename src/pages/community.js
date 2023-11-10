@@ -49,64 +49,70 @@ export default function Community() {
         <Style.PostList>
           {currentPagePostList.map((post, index) => {
             return (
-              <Style.PostContainer key={index} onClick={() => navigate(`/post/${post.id}`)}>
-                <Style.PostInfo>
-                  <Style.PostTitle>{post.title}</Style.PostTitle>
-                  <Style.PostCreatedAt>{formatDate(post.createdDate)}</Style.PostCreatedAt>
-                </Style.PostInfo>
-                {post.echo ? <Style.PostState>{post.echo}</Style.PostState> : null}
-                {post.block !== 'NORMAL' ? (
-                  post.echo ? (
-                    <Style.PostState
-                      onMouseEnter={() => {
-                        setHover(true);
-                        setHoverNumber(post.id);
-                      }}
-                      onMouseLeave={() => {
-                        setHover(false);
-                        setHoverNumber(0);
-                      }}
-                      src={process.env.PUBLIC_URL + '/assets/images/echo.png'}
-                    >
-                      {hover && hoverNumber === post.id ? (
-                        <Style.HoverContainer style={{ backgroundColor: '#ffffdd' }}>{'동조적'}</Style.HoverContainer>
-                      ) : null}
-                    </Style.PostState>
-                  ) : (
-                    <Style.PostState
-                      onMouseEnter={() => {
-                        setHover(true);
-                        setHoverNumber(post.id);
-                      }}
-                      onMouseLeave={() => {
-                        setHover(false);
-                        setHoverNumber(0);
-                      }}
-                      src={process.env.PUBLIC_URL + '/assets/images/block.png'}
-                    >
-                      {hover && hoverNumber === post.id ? (
-                        <Style.HoverContainer>{'공격적'}</Style.HoverContainer>
-                      ) : null}
-                    </Style.PostState>
-                  )
-                ) : post.echo ? (
-                  <Style.PostState
-                    onMouseEnter={() => {
-                      setHover(true);
-                      setHoverNumber(post.id);
-                    }}
-                    onMouseLeave={() => {
-                      setHover(false);
-                      setHoverNumber(0);
-                    }}
-                    src={process.env.PUBLIC_URL + '/assets/images/echo.png'}
-                  >
-                    {hover && hoverNumber === post.id ? (
-                      <Style.HoverContainer style={{ backgroundColor: '#ffffdd' }}>{'동조적'}</Style.HoverContainer>
+              <>
+                {!(post.echo && post.block !== 'NORMAL') ? (
+                  <Style.PostContainer key={index} onClick={() => navigate(`/post/${post.id}`)}>
+                    <Style.PostInfo>
+                      <Style.PostTitle>{post.title}</Style.PostTitle>
+                      <Style.PostCreatedAt>{formatDate(post.createdDate)}</Style.PostCreatedAt>
+                    </Style.PostInfo>
+                    {post.echo ? <Style.PostState>{post.echo}</Style.PostState> : null}
+                    {post.block !== 'NORMAL' ? (
+                      post.echo ? (
+                        <Style.PostState
+                          onMouseEnter={() => {
+                            setHover(true);
+                            setHoverNumber(post.id);
+                          }}
+                          onMouseLeave={() => {
+                            setHover(false);
+                            setHoverNumber(0);
+                          }}
+                          src={process.env.PUBLIC_URL + '/assets/images/echo.png'}
+                        >
+                          {hover && hoverNumber === post.id ? (
+                            <Style.HoverContainer style={{ backgroundColor: '#ffffdd' }}>
+                              {'동조적'}
+                            </Style.HoverContainer>
+                          ) : null}
+                        </Style.PostState>
+                      ) : (
+                        <Style.PostState
+                          onMouseEnter={() => {
+                            setHover(true);
+                            setHoverNumber(post.id);
+                          }}
+                          onMouseLeave={() => {
+                            setHover(false);
+                            setHoverNumber(0);
+                          }}
+                          src={process.env.PUBLIC_URL + '/assets/images/block.png'}
+                        >
+                          {hover && hoverNumber === post.id ? (
+                            <Style.HoverContainer>{'공격적'}</Style.HoverContainer>
+                          ) : null}
+                        </Style.PostState>
+                      )
+                    ) : post.echo ? (
+                      <Style.PostState
+                        onMouseEnter={() => {
+                          setHover(true);
+                          setHoverNumber(post.id);
+                        }}
+                        onMouseLeave={() => {
+                          setHover(false);
+                          setHoverNumber(0);
+                        }}
+                        src={process.env.PUBLIC_URL + '/assets/images/echo.png'}
+                      >
+                        {hover && hoverNumber === post.id ? (
+                          <Style.HoverContainer style={{ backgroundColor: '#ffffdd' }}>{'동조적'}</Style.HoverContainer>
+                        ) : null}
+                      </Style.PostState>
                     ) : null}
-                  </Style.PostState>
+                  </Style.PostContainer>
                 ) : null}
-              </Style.PostContainer>
+              </>
             );
           })}
         </Style.PostList>
